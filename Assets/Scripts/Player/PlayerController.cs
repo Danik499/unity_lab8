@@ -5,9 +5,10 @@ using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
-    private Vector3 posToMove;
-    private bool posSelected = false;
+    public GameObject bullet;
     private NavMeshAgent agent;
+
+    public static Vector3 pos;
     void Start()
     {
         agent = transform.GetComponent<NavMeshAgent>();
@@ -15,20 +16,23 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        pos = transform.position;
+        if (Input.GetMouseButtonDown(0))
         { 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             LayerMask platformLayer = LayerMask.GetMask("Platform");
-            posSelected = Physics.Raycast(ray, out hit, 1000);
-            if (posSelected)
+            LayerMask enemyLayer = LayerMask.GetMask("Enemy");
+            if (Physics.Raycast(ray, out hit, 1000, platformLayer) && Physics.Raycast(ray, out hit, 1000, enemyLayer))
             {
-                posToMove = hit.point;
+                GameObject fireball = Instantiate(bullet);
+                fireball.transform.position = transform.position + hit.point.normalized;
+                fireball.transform.LookAt(hit.point);
             }
-        }
-        if (posSelected)
-        {
-            agent.SetDestination(posToMove);
+            else if (Physics.Raycast(ray, out hit, 1000, platformLayer))
+            {
+                agent.SetDestination(hit.point);
+            }
         }
     }
 }

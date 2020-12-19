@@ -20,7 +20,7 @@ public class EnemiesSpawn : MonoBehaviour
             secondsLeft = secondsCount;
             int x = Random.Range(-10, 10);
             int z = Random.Range(-10, 10);
-            Instantiate(Enemy, new Vector3(x, 1, z), Quaternion.identity);
+            Instantiate(Enemy, new Vector3(x, 0.9f, z), Quaternion.identity);
         }   
     }
 
